@@ -124,8 +124,8 @@ Shader "Custom/Raymating"
 				// レイの進行方向
 				float3 rayDir = normalize(pos.xyz - _WorldSpaceCameraPos);
 
-                float3 color = tex2D(_MainTex,i.uv);
-                for (int i = 0; i < 90; i++)
+                
+                for (int n = 0; n < 90; n++)
                 {
                     float3 q = pos;
 
@@ -135,6 +135,8 @@ Shader "Custom/Raymating"
                     {
                         // 距離が十分に短かったら衝突したと判定して色を計算する
                         float3 normal = getNormal(q);
+
+                        float3 color = tex2D(_MainTex,i.uv);
                         float diff = fixed4(lightColor * max(dot(normal, lightDir), 0) , 1.0);
                         color = diff*_Diffuse*(1-length(q)*0.08);
                         fixed4 emission = pow(dist + length(q)/20 + 0.8, -2.0);
