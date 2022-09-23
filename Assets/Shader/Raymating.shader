@@ -135,10 +135,10 @@ Shader "Custom/Raymating"
                     {
                         // 距離が十分に短かったら衝突したと判定して色を計算する
                         float3 normal = getNormal(q);
-
-                        float3 color = tex2D(_MainTex,i.uv);
+                        float2 uv = float2(1.0-fmod(q.x,2.0),1.0-fmod(q.z,2.0));
+                        float3 color = tex2D(_MainTex,uv);
                         float diff = fixed4(lightColor * max(dot(normal, lightDir), 0) , 1.0);
-                        color = diff*_Diffuse*(1-length(q)*0.08);
+                        color *= diff*_Diffuse*(1-length(q)*0.08);
                         fixed4 emission = pow(dist + length(q)/20 + 0.8, -2.0);
                         return float4(color*_GlowColor*emission,1.0);
                     }
