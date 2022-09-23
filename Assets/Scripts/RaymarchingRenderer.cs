@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
+[ExecuteInEditMode]
 [RequireComponent(typeof(Camera))]
 public class RaymarchingRenderer : MonoBehaviour
 {
@@ -27,7 +28,6 @@ public class RaymarchingRenderer : MonoBehaviour
 
     void CleanUp()
     {
-        Debug.Log("clean");
         _camera = GetComponent<Camera>();
         //GetComponent<Camera>().depthTextureMode |= DepthTextureMode.Depth;
 
@@ -35,8 +35,6 @@ public class RaymarchingRenderer : MonoBehaviour
         {
             _camera.RemoveCommandBuffer(pass, buffer);
         }
-
-        Debug.Log("do clean");
     }
 
     void OnEnable()
@@ -48,13 +46,10 @@ public class RaymarchingRenderer : MonoBehaviour
     void OnDisable()
     {
         CleanUp();
-        Debug.Log("Disable");
     }
 
     void Update()
     {
-        //Debug.Log("neko");
-        //UpdateCommandBuffer();
         if (buffer != null)
         {
             quad_.vertices = new Vector3[4] {
@@ -64,7 +59,6 @@ public class RaymarchingRenderer : MonoBehaviour
                 Quaternion.Euler(transform.localEulerAngles)*(new Vector3( 2.0f ,-1.0f,  1.0f))+transform.position,
             };
             quad_.triangles = new int[6] { 0, 1, 2, 2, 3, 0 };
-            //buffer.DrawMesh(quad_, Matrix4x4.identity, material, 0, 0);
         }
     }
 
@@ -86,8 +80,6 @@ public class RaymarchingRenderer : MonoBehaviour
         buffer.DrawMesh(quad_, Matrix4x4.identity, material, 0, 0);
 
         _camera.AddCommandBuffer(pass, buffer);
-
-        Debug.Log("draw");
 
     }
 
