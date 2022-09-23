@@ -29,6 +29,7 @@ public class RaymarchingRenderer : MonoBehaviour
     {
         Debug.Log("clean");
         _camera = GetComponent<Camera>();
+        //GetComponent<Camera>().depthTextureMode |= DepthTextureMode.Depth;
 
         if (_camera != null && buffer != null)
         {
@@ -76,18 +77,18 @@ public class RaymarchingRenderer : MonoBehaviour
             return;
         }
 
-        if (buffer == null)
-        {
-            quad_ = GenerateQuad();
 
-            buffer = new CommandBuffer();
-            buffer.name = "Raymarching";
+        quad_ = GenerateQuad();
 
-            buffer.DrawMesh(quad_, Matrix4x4.identity, material, 0, 0);
-            _camera.AddCommandBuffer(pass, buffer);
+        buffer = new CommandBuffer();
+        buffer.name = "Raymarching";
 
-            Debug.Log("draw");
-        }
+        buffer.DrawMesh(quad_, Matrix4x4.identity, material, 0, 0);
+
+        _camera.AddCommandBuffer(pass, buffer);
+
+        Debug.Log("draw");
+
     }
 
 }

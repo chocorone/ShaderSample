@@ -10,13 +10,16 @@ Shader "Custom/Raymating"
 	}
    SubShader
     {
-        Tags { "RenderType" = "Opaque" "DisableBatching" = "True" "Queue" = "Geometry+10" }
+        Tags { "RenderType" = "Opaque" "DisableBatching" = "True" "Queue" = "Geometry" }
         Cull Off 
+
 
         Pass
         {
+            //Zwrite Off
+            //ZTest Always
             Tags { "LightMode" = "Deferred" }
-
+            //ZWrite Off ZTest Always
             Stencil 
             {
                 Comp Always
@@ -151,7 +154,7 @@ Shader "Custom/Raymating"
 				return o;
 			}
 
-            GBufferOut frag(v2f i) : SV_Target
+            GBufferOut frag(v2f i) 
 			{
                 float3 lightDir = _WorldSpaceLightPos0.xyz;
                 float3 lightColor = _LightColor0;
@@ -161,7 +164,7 @@ Shader "Custom/Raymating"
 				float3 rayDir = normalize(pos.xyz - _WorldSpaceCameraPos);
 
                 float dist;
-                for (int n = 0; n < 30; n++)
+                for (int n = 0; n < 90; n++)
                 {
                     float3 q = pos;
                     dist = sceneDist(q);
@@ -180,11 +183,10 @@ Shader "Custom/Raymating"
                 float2 uv = float2(1.0-fmod(pos.x,2.0),1.0-fmod(pos.z,2.0));
                 o.diffuse  = float4(tex2D(_MainTex,uv)*_Diffuse.xyz,1);
                 o.specular = _Specular;
-                o.specular = float4(uv.x,uv.x,uv.x,1);
                 fixed4 emission = pow(dist + length(pos)/400 + 0.8, -2.0);
                 o.emission = _GlowColor*emission;
                 o.normal = float4(getNormal(pos),1.0);
-                o.depth  = uv.x;
+                o.depth  = GetDepth(pos);
                     
 
                 return o;
@@ -193,4 +195,5 @@ Shader "Custom/Raymating"
             ENDCG
         }
     }
+    Fallback "Diffuse"
 }
