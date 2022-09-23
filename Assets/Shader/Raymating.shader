@@ -4,17 +4,26 @@ Shader "Custom/Raymating"
 	{
 		_MainTex ("Texture", 2D) = "white" {}
         _Diffuse ("Diffuse Color", Color) = (1, 1, 1, 1)
+        _Specular ("Specular Color", Color) = (1, 1, 1, 1)
 		[Space(10)]
 		[HDR]_GlowColor ("Emission", Color) = (1, 1, 1, 1)
 	}
    SubShader
     {
-        Tags {"Queue" = "Transparent" "LightMode" = "ForwardBase"}
-        //LOD 100
-        Cull Off ZWrite On ZTest Always
-        Blend SrcAlpha OneMinusSrcAlpha
+        Tags { "RenderType" = "Opaque" "DisableBatching" = "True" "Queue" = "Geometry+10" }
+        Cull Off 
+
         Pass
         {
+            Tags { "LightMode" = "Deferred" }
+
+            Stencil 
+            {
+                Comp Always
+                Pass Replace
+                Ref 128
+            }
+
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -26,22 +35,32 @@ Shader "Custom/Raymating"
 			float4 _MainTex_ST;
             float4 _Diffuse;
             float4 _GlowColor;
+            float4 _Specular;
             float3 lightDir = float3(1.0, 1.0, 1.0);
+
             struct appdata
 			{
 				float4 vertex : POSITION;
-				float2 uv : TEXCOORD0;
 			};
             struct v2f
 			{
-				float2 uv : TEXCOORD0;
 				float4 pos : POSITION1;
 				float4 vertex : SV_POSITION;
 			};
 
-            // 球の距離関数
-            float sphereDist(float3 position, float radius)
+            struct GBufferOut
             {
+                half4 diffuse  : SV_Target0; // rgb: diffuse,  a: occlusion
+                half4 specular : SV_Target1; // rgb: specular, a: smoothness
+                half4 normal   : SV_Target2; // rgb: normal,   a: unused
+                half4 emission : SV_Target3; // rgb: emission, a: unused
+                float depth    : SV_Depth;
+            };
+
+            // 球の距離関数
+            float sphereDist(float3 position)
+            {
+                float radius = 3.0;
                 return length(position) - radius;
             }
 
@@ -93,6 +112,24 @@ Shader "Custom/Raymating"
             float sceneDist(float3 position)
             {
                 return dePseudoKleinian(position);
+                //return sphereDist(position);
+            }
+
+            float3 GetCameraPosition()    { return _WorldSpaceCameraPos;      }
+            float3 GetCameraForward()     { return -UNITY_MATRIX_V[2].xyz;    }
+            float3 GetCameraUp()          { return UNITY_MATRIX_V[1].xyz;     }
+            float3 GetCameraRight()       { return UNITY_MATRIX_V[0].xyz;     }
+            float  GetCameraFocalLength() { return abs(UNITY_MATRIX_P[1][1]); }
+            float  GetCameraMaxDistance() { return _ProjectionParams.z - _ProjectionParams.y; }
+
+            float GetDepth(float3 pos)
+            {
+                float4 vpPos = mul(UNITY_MATRIX_VP, float4(pos, 1.0));
+            #if defined(SHADER_TARGET_GLSL)
+                return (vpPos.z / vpPos.w) * 0.5 + 0.5;
+            #else 
+                return vpPos.z / vpPos.w;
+            #endif 
             }
 
             // レイがぶつかった位置における法線を取得
@@ -100,9 +137,9 @@ Shader "Custom/Raymating"
             {
                 const float d = 0.0005;
                 return normalize( float3(
-                    dePseudoKleinian(p+float3(  d,0.0,0.0))-dePseudoKleinian(p+float3( -d,0.0,0.0)),
-                    dePseudoKleinian(p+float3(0.0,  d,0.0))-dePseudoKleinian(p+float3(0.0, -d,0.0)),
-                    dePseudoKleinian(p+float3(0.0,0.0,  d))-dePseudoKleinian(p+float3(0.0,0.0, -d)) ));
+                    sceneDist(p+float3(  d,0.0,0.0))-sceneDist(p+float3( -d,0.0,0.0)),
+                    sceneDist(p+float3(0.0,  d,0.0))-sceneDist(p+float3(0.0, -d,0.0)),
+                    sceneDist(p+float3(0.0,0.0,  d))-sceneDist(p+float3(0.0,0.0, -d)) ));
             }
             
             v2f vert(appdata v)
@@ -111,11 +148,10 @@ Shader "Custom/Raymating"
 				o.vertex = UnityObjectToClipPos(v.vertex);
                 //ローカル→ワールド座標に変換
 				o.pos = mul(unity_ObjectToWorld, v.vertex);
-				o.uv = v.uv;
 				return o;
 			}
 
-            fixed4 frag(v2f i) : SV_Target
+            GBufferOut frag(v2f i) : SV_Target
 			{
                 float3 lightDir = _WorldSpaceLightPos0.xyz;
                 float3 lightColor = _LightColor0;
@@ -124,29 +160,34 @@ Shader "Custom/Raymating"
 				// レイの進行方向
 				float3 rayDir = normalize(pos.xyz - _WorldSpaceCameraPos);
 
-                
-                for (int n = 0; n < 90; n++)
+                float dist;
+                for (int n = 0; n < 30; n++)
                 {
                     float3 q = pos;
-
-                    
-                    float dist = sceneDist(q);
-                    if (dist < 0.001)
-                    {
-                        // 距離が十分に短かったら衝突したと判定して色を計算する
-                        float3 normal = getNormal(q);
-                        float2 uv = float2(1.0-fmod(q.x,2.0),1.0-fmod(q.z,2.0));
-                        float3 color = tex2D(_MainTex,uv);
-                        float diff = fixed4(lightColor * max(dot(normal, lightDir), 0) , 1.0);
-                        color *= diff*_Diffuse*(1-length(q)*0.08);
-                        fixed4 emission = pow(dist + length(q)/20 + 0.8, -2.0);
-                        return float4(color*_GlowColor*emission,1.0);
-                    }
+                    dist = sceneDist(q);
+                    // 距離が十分に短かったら衝突したと判定
+                    if (dist <= 0.001) break;
                     // レイを進める
                     pos.xyz += dist * rayDir.xyz;
                 }
 
-                return float4(0,1,0, 0);
+
+                
+                if (dist > 0.001)
+                    discard;
+
+                GBufferOut o;
+                float2 uv = float2(1.0-fmod(pos.x,2.0),1.0-fmod(pos.z,2.0));
+                o.diffuse  = float4(tex2D(_MainTex,uv)*_Diffuse.xyz,1);
+                o.specular = _Specular;
+                o.specular = float4(uv.x,uv.x,uv.x,1);
+                fixed4 emission = pow(dist + length(pos)/400 + 0.8, -2.0);
+                o.emission = _GlowColor*emission;
+                o.normal = float4(getNormal(pos),1.0);
+                o.depth  = uv.x;
+                    
+
+                return o;
                 
             }
             ENDCG

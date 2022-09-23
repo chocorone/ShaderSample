@@ -76,7 +76,8 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Diffuse: {r: 0, g: 0.72070265, b: 1, a: 1}
+    - _Diffuse: {r: 0.81761, g: 0.9920585, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _GlowColor: {r: 1.2509387, g: 12.268822, b: 11.258449, a: 1}
+    - _GlowColor: {r: 0, g: 0.074842736, b: 0.4811321, a: 1}
+    - _Specular: {r: 0.46226418, g: 0.4608105, b: 0.4608105, a: 1}
   m_BuildTextureStacks: []
