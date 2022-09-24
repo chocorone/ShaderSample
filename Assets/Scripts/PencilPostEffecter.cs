@@ -10,7 +10,7 @@ public class PencilPostEffecter : MonoBehaviour
 {
     [SerializeField] private Material _material;
 
-    [SerializeField, Range(1, 30)] int _fps = 30;
+    [Range(1, 30)] public int _fps = 30;
     [SerializeField] Animator _animator;
 
     [SerializeField] bool ifFlip = true;
@@ -30,9 +30,14 @@ public class PencilPostEffecter : MonoBehaviour
     private bool tex1 = true;
 
 
-    void InitializeThresholdTime()
+    public void InitializeThresholdTime()
     {
         _thresholdTime = 1f / _fps;
+    }
+
+    public void ChangeColored(bool isColored)
+    {
+        _material.SetFloat("_Color", isColored ? 1 : 0);
     }
 
     private void OnValidate()
@@ -46,7 +51,6 @@ public class PencilPostEffecter : MonoBehaviour
 
         GetComponent<Camera>().depthTextureMode = DepthTextureMode.DepthNormals;
         _animator.enabled = false;
-        //_animator2.enabled = false;
         InitializeThresholdTime();
         _material.SetFloat("_Flip", 1);
     }

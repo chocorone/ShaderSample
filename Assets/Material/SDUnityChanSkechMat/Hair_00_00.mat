@@ -12,7 +12,6 @@ Material:
   m_ValidKeywords: []
   m_InvalidKeywords:
   - _
-  - _CONSIDERNORMAL_ON
   - _EMISSIVE_SIMPLE
   - _INVERSE_Z_AXIS_BLD_ON
   - _IS_BLENDADDTOMATCAP_ON
@@ -190,13 +189,13 @@ Material:
     - _Base_Speed: 0
     - _BlurLevelMatcap: 0
     - _BlurLevelSGM: 0
-    - _BrightNess: 2
+    - _BrightNess: 1.1
     - _BumpScale: 1
     - _BumpScaleMatcap: 1
     - _CameraRolling_Stabilizer: 0
     - _Clipping_Level: 0
     - _ColorShift_Speed: 0
-    - _ConsiderNormal: 1
+    - _ConsiderNormal: 0
     - _CullMode: 2
     - _CutOut: 0.1
     - _Cutoff: 0.5
