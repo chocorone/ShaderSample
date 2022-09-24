@@ -295,22 +295,21 @@ Shader "Custom/PostHandWriting"
                 fixed2 scrPos =(paperuv)* _StrokeDensity;
                 col =tex2D(_PaperTex, i.uv)*1.1;
 
-                if( nl <= 0.2f ){
-                    col *= tex2D(_Stroke1, scrPos)*0.4;
-                }
-                else if( nl <= 0.3f ){
-                    col *= tex2D(_Stroke1,  scrPos)*0.7;
-                }
-                else if( nl  <= 0.4f ){ 
-                    col *= tex2D(_Stroke1,  scrPos)*0.8; 
-                } 
-                else if( nl  <= 0.6f ){
-                    col *= tex2D(_Stroke2,  scrPos)*0.7; 
-                }else if(_Color){
-                    col *= tex2D(_Stroke2,  scrPos)*0.7;
-                }
-
                 if(_Color){
+                    if( nl <= 0.2f ){
+                        col *= tex2D(_Stroke1, scrPos)*0.4;
+                    }
+                    else if( nl <= 0.3f ){
+                        col *= tex2D(_Stroke1,  scrPos)*0.7;
+                    }
+                    else if( nl  <= 0.4f ){ 
+                        col *= tex2D(_Stroke1,  scrPos)*0.8; 
+                    } 
+                    else if( nl  <= 0.6f ){
+                        col *= tex2D(_Stroke2,  scrPos)*0.7; 
+                    }else{
+                        col *= tex2D(_Stroke2,  scrPos)*0.7;
+                    }
                     float3 hsv= rgb2hsv(tex2D(_MainTex, uv));
 
                     if(hsv.z>0.2){
@@ -331,12 +330,33 @@ Shader "Custom/PostHandWriting"
                         } 
                         col.rgb = hsv2rgb(hsv);                        
                     }
+
+                    hsv= rgb2hsv(col.xyz);
+                    if(hsv.z>0.99&&hsv.y<0.12){
+                        col *=tex2D(_PaperTex, i.uv)*1.05;
+                    }
+                }else{
+                    if( nl <= 0.01f ){
+                        col *= tex2D(_Stroke1, scrPos)*0.5;
+                    }
+                    else if( nl <= 0.1f ){
+                        col *= tex2D(_Stroke1, scrPos)*0.7;
+                    }
+                    else if( nl <= 0.3f ){ 
+                        col *= tex2D(_Stroke1, scrPos)*0.9; 
+                    } 
+                    else if( nl <= 0.5f ){
+                        col *= tex2D(_Stroke2, scrPos)*0.8; 
+                    }
+                    else if(nl <= 0.65f){
+                        col *= tex2D(_Stroke2, scrPos)*0.9;
+                    }
+                    else if(nl <= 0.8f){
+                        col *= tex2D(_Stroke2, scrPos)*1.4;
+                    }
                 }
 
-                float3 hsv2= rgb2hsv(col.xyz);
-                if(hsv2.z>0.99&&hsv2.y<0.12){
-                    col *=tex2D(_PaperTex, i.uv)*1.05;
-                }
+
 
                 if(calDepth(i)*10000*_DepthMagnitude>_DepthThreshold){
                     col = _OutlineColor;
