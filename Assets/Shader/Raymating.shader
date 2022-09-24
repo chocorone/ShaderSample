@@ -117,13 +117,6 @@ Shader "Custom/Raymating"
                 //return sphereDist(position);
             }
 
-            float3 GetCameraPosition()    { return _WorldSpaceCameraPos;      }
-            float3 GetCameraForward()     { return -UNITY_MATRIX_V[2].xyz;    }
-            float3 GetCameraUp()          { return UNITY_MATRIX_V[1].xyz;     }
-            float3 GetCameraRight()       { return UNITY_MATRIX_V[0].xyz;     }
-            float  GetCameraFocalLength() { return abs(UNITY_MATRIX_P[1][1]); }
-            float  GetCameraMaxDistance() { return _ProjectionParams.z - _ProjectionParams.y; }
-
             float GetDepth(float3 pos)
             {
                 float4 vpPos = mul(UNITY_MATRIX_VP, float4(pos, 1.0));
@@ -159,6 +152,8 @@ Shader "Custom/Raymating"
                 float3 lightColor = _LightColor0;
 
                 float3 pos = i.pos.xyz;
+
+
 				// レイの進行方向
 				float3 rayDir = normalize(pos.xyz - _WorldSpaceCameraPos);
 
@@ -172,8 +167,6 @@ Shader "Custom/Raymating"
                     // レイを進める
                     pos.xyz += dist * rayDir.xyz;
                 }
-
-
                 
                 if (dist > 0.001)
                     discard;

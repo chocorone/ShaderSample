@@ -8,11 +8,10 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Eye-EyeBall_00_00
-  m_Shader: {fileID: 10755, guid: 0000000000000000f000000000000000, type: 0}
+  m_Shader: {fileID: 4800000, guid: 120bbae72804d594094c017ad02f7749, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords:
   - _
-  - _CONSIDERNORMAL_ON
   - _EMISSIVE_SIMPLE
   - _INVERSE_Z_AXIS_BLD_ON
   - _IS_BLENDADDTOMATCAP_ON
@@ -26,7 +25,6 @@ Material:
   - _OUTLINE_NML
   - _RIMLIGHT_ON
   - _SET_SYSTEMSHADOWSTOBASE_ON
-  - _USESTROKE_ON
   - _USE_1STAS2ND_ON
   - _USE_BASEAS1ST_ON
   m_LightmapFlags: 5
@@ -159,11 +157,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Stroke1:
-        m_Texture: {fileID: 2800000, guid: b917107f366eeed459ced361977a0624, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Stroke2:
-        m_Texture: {fileID: 2800000, guid: af8db4028f03d0a4da6bea289c221113, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
@@ -188,7 +186,7 @@ Material:
     - _CameraRolling_Stabilizer: 0
     - _Clipping_Level: 0
     - _ColorShift_Speed: 0
-    - _ConsiderNormal: 1
+    - _ConsiderNormal: 0
     - _CullMode: 2
     - _CutOut: 0
     - _Cutoff: 0.5
@@ -274,7 +272,7 @@ Material:
     - _UVSec: 0
     - _Unlit_Intensity: 1
     - _UseGradation: 0
-    - _UseStroke: 1
+    - _UseStroke: 0
     - _Use_1stAs2nd: 1
     - _Use_BaseAs1st: 1
     - _ZWrite: 1

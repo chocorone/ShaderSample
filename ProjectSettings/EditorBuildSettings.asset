@@ -4,5 +4,17 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/PostSketch.unity
+    guid: 65ca19fe801ac164ca121d91660ac026
+  - enabled: 1
+    path: Assets/Scenes/Sketch.unity
+    guid: 379faf7738e82e04bb63b87486a17532
+  - enabled: 1
+    path: Assets/Scenes/PostSketchFlip.unity
+    guid: 749a009e95564024abdf9656dfb4ab81
+  - enabled: 1
+    path: Assets/Scenes/Raymating1.unity
+    guid: 1f381b7f7c8ce964faf599970a51fbdd
   m_configObjects: {}
