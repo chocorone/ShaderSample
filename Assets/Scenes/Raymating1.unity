@@ -483,6 +483,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5131495029723735684, guid: 9d4dd85afa58a17438e34b09e8d15f77, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 527a8539a9e4fa94fa21e653e99bc949, type: 2}
     - target: {fileID: 5131495029730920724, guid: 9d4dd85afa58a17438e34b09e8d15f77, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -613,6 +617,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 2
   angleSpeed: 10
+  Emote: 0
+  emotionInterval: 10
 --- !u!1 &1530689822
 GameObject:
   m_ObjectHideFlags: 0

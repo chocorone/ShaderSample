@@ -6,7 +6,10 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] float speed = 5;
     [SerializeField] float angleSpeed = 5;
+    [SerializeField] bool Emote = false;
+    [SerializeField] float emotionInterval = 10;
     float h = 0, v = 0;
+    float _time = 0;
     Animator anim;
 
     Rigidbody rb;
@@ -22,6 +25,13 @@ public class PlayerController : MonoBehaviour
     {
         h = Input.GetAxisRaw("Horizontal");
         v = Input.GetAxisRaw("Vertical");
+        _time += Time.deltaTime;
+        if (_time > emotionInterval)
+        {
+            anim.SetTrigger("emo");
+            _time = 0;
+        }
+
     }
 
     private void FixedUpdate()
@@ -34,7 +44,6 @@ public class PlayerController : MonoBehaviour
         {
             Quaternion q = Quaternion.LookRotation(movement.normalized, Vector3.up);
             transform.rotation = Quaternion.Slerp(transform.rotation, q, Time.deltaTime * angleSpeed);
-
         }
 
     }
