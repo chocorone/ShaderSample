@@ -12,7 +12,6 @@ public class PencilPostEffecter : MonoBehaviour
 
     [SerializeField, Range(1, 30)] int _fps = 30;
     [SerializeField] Animator _animator;
-    // [SerializeField] List<Animator> _animators;
 
     [SerializeField] bool ifFlip = true;
     [SerializeField] bool reverse = false;

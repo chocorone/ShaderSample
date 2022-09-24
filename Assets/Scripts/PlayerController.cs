@@ -13,14 +13,13 @@ public class PlayerController : MonoBehaviour
     Animator anim;
 
     Rigidbody rb;
-    // Start is called before the first frame update
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         h = Input.GetAxisRaw("Horizontal");
@@ -31,7 +30,6 @@ public class PlayerController : MonoBehaviour
             anim.SetTrigger("emo");
             _time = 0;
         }
-
     }
 
     private void FixedUpdate()
