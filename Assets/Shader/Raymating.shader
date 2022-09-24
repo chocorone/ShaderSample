@@ -5,6 +5,7 @@ Shader "Custom/Raymating"
 		_MainTex ("Texture", 2D) = "white" {}
         _Diffuse ("Diffuse Color", Color) = (1, 1, 1, 1)
         _Specular ("Specular Color", Color) = (1, 1, 1, 1)
+        _minDistance ("Min Distance",float) = 1
 		[Space(10)]
 		[HDR]_GlowColor ("Emission", Color) = (1, 1, 1, 1)
 	}
@@ -16,10 +17,7 @@ Shader "Custom/Raymating"
 
         Pass
         {
-            //Zwrite Off
-            //ZTest Always
             Tags { "LightMode" = "Deferred" }
-            //ZWrite Off ZTest Always
             Stencil 
             {
                 Comp Always
@@ -40,6 +38,7 @@ Shader "Custom/Raymating"
             float4 _GlowColor;
             float4 _Specular;
             float3 lightDir = float3(1.0, 1.0, 1.0);
+            float _minDistance;
 
             struct appdata
 			{
