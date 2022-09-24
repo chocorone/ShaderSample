@@ -24,12 +24,16 @@ public class PlayerController : MonoBehaviour
     {
         h = Input.GetAxisRaw("Horizontal");
         v = Input.GetAxisRaw("Vertical");
-        _time += Time.deltaTime;
-        if (_time > emotionInterval)
+        if (Emote)
         {
-            anim.SetTrigger("emo");
-            _time = 0;
+            _time += Time.deltaTime;
+            if (_time > emotionInterval)
+            {
+                anim.SetTrigger("emo");
+                _time = 0;
+            }
         }
+
     }
 
     private void FixedUpdate()
